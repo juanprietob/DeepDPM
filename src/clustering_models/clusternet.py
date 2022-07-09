@@ -91,7 +91,6 @@ class ClusterNet(object):
                 self.count[cluster_idx] += assignments[i, cluster_idx].item()
                 eta = 1.0 / self.count[cluster_idx]
                 updated_cluster = (1 - eta) * self.clusters[cluster_idx] + eta * X[i] * assignments[i, cluster_idx].item()
-                # updated_cluster = (1 - eta) * self.clusters[cluster_idx] + eta * X[i]
                 self.clusters[cluster_idx] = updated_cluster
 
     def update_cluster_covs(self, X, cluster_idx, assignments):

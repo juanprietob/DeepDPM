@@ -406,23 +406,29 @@ def train_cluster_net():
     if args.imbalanced:
         tags.append("unbalanced_trainset")
 
-    if args.offline:
-        logger = DummyLogger()
-    else:
-        logger = NeptuneLogger(
-                api_key='your_API_token',
-                project_name='your_project_name',
-                experiment_name=args.exp_name,
-                params=vars(args),
-                tags=tags
-            )
+    # if args.offline:
+    logger = DummyLogger()
+    # else:
+        # logger = DummyLogger()
+        # logger = NeptuneLogger(
+        #             project='juanprietob/DeepDPM',
+        #             tags=tags,
+        #             api_key=os.environ['NEPTUNE_API_TOKEN']
+        #         )
+        # logger = NeptuneLogger(
+        #         api_key='your_API_token',
+        #         project_name='your_project_name',
+        #         experiment_name=args.exp_name,
+        #         params=vars(args),
+        #         tags=tags
+        #     )
 
-    if isinstance(logger, NeptuneLogger):
-        if logger.api_key == 'your_API_token':
-            print("No Neptune API token defined!")
-            print("Please define Neptune API token or run with the --offline argument.")
-            print("Running without logging...")
-            logger = DummyLogger()
+    # if isinstance(logger, NeptuneLogger):
+    #     if logger.api_key == 'your_API_token':
+    #         print("No Neptune API token defined!")
+    #         print("Please define Neptune API token or run with the --offline argument.")
+    #         print("Running without logging...")
+    #         logger = DummyLogger()
 
     # Main body
     if args.seed:
@@ -440,7 +446,7 @@ def train_cluster_net():
     
     trainer = pl.Trainer(logger=logger, max_epochs=args.max_epochs, gpus=args.gpus, num_sanity_val_steps=0, checkpoint_callback=checkpoint_callback, limit_train_batches=args.limit_train_batches, limit_val_batches=args.limit_val_batches)
     trainer.fit(model, train_loader, val_loader)
-
+ 
     # evaluate last model
     dataset = dataset_obj.get_train_data()
     data, labels = dataset.tensors[0], dataset.tensors[1].numpy()

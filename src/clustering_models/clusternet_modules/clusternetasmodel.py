@@ -48,7 +48,10 @@ class ClusterNetModel(pl.LightningModule):
         """
 
         super().__init__()
-        self.hparams = hparams
+        for hp in vars(hparams):
+            self.hparams[hp] = getattr(hparams, hp)
+        # self.hparams = hparams
+
         self.K = init_k
         self.n_sub = n_sub
         self.codes_dim = input_dim
@@ -92,7 +95,6 @@ class ClusterNetModel(pl.LightningModule):
 
         return self.cluster_net(codes)
 
-        
 
     def on_train_epoch_start(self):
         # get current training_stage
@@ -369,6 +371,7 @@ class ClusterNetModel(pl.LightningModule):
                     init_labels = init_labels[self.train_gt > -1]
                 else:
                     gt = self.train_gt
+                print(gt.shape, init_labels.shape)
                 if len(gt) > 2 * (10 ** 5):
                     # sample only a portion of the codes
                     gt = gt[:2 * (10**5)]

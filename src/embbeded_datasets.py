@@ -27,12 +27,14 @@ class embbededDataset:
         self._latent_dim = args.latent_dim,
         self.transform = args.transform
         self.dataset_loc = os.path.join(args.dir, f"{args.dataset.upper()}")
+        print(self.dataset_loc)
 
     def get_train_data(self):
         train_codes = torch.Tensor(torch.load(os.path.join(self.dataset_loc, "train_codes.pt")))
         labels = torch.load(os.path.join(self.dataset_loc, "train_labels.pt"))
         
-        train_labels = torch.Tensor(labels).cpu().float()
+        train_labels = labels.clone().cpu().float()
+        # train_labels = torch.Tensor(labels).cpu().float()
 
         if self.transform:
             if self.transform == "standard":
