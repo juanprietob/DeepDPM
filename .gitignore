@@ -2,4 +2,7 @@
 .neptune
 .vscode
 */.pyc
+*/__pycache__
 venv/
+*/.DS_Store
+.DS_Store
