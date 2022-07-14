@@ -1,4 +1,5 @@
 .idea
 .neptune
+.vscode
 */.pyc
 venv/
