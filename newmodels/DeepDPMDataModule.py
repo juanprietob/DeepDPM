@@ -3,21 +3,21 @@ from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import MNIST
 import os
 from torchvision import datasets, transforms
+from typing import Union, List
 
 
 class DeepDPMDataModule(pl.LightningDataModule):
-
     def prepare_data(self, *args, **kwargs):
         # This code runs a single time to download the dataset, etc.
         pass
-
 
     def setup(self, stage):
         # Setup is run by every process across all nodes - set state here.
 
         # transforms for images
-        transform = transforms.Compose([transforms.ToTensor(),
-                                        transforms.Normalize((0.1307,), (0.3081,))])
+        transform = transforms.Compose(
+            [transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))]
+        )
         mnist_train = MNIST(os.getcwd(), train=True, download=True, transform=transform)
         mnist_test = MNIST(os.getcwd(), train=False, download=True, transform=transform)
 
@@ -25,13 +25,13 @@ class DeepDPMDataModule(pl.LightningDataModule):
 
     # Other dataloaders basically unwrap datasets defined in setup.
     def train_dataloader(self) -> DataLoader:
-        return DataLoader(self.mnist_train, batch_size=64)
+        return DataLoader(self.mnist_train, batch_size=64, num_workers=8)
 
     def val_dataloader(self) -> Union[DataLoader, List[DataLoader]]:
-        return DataLoader(self.mnist_val, batch_size=64)
+        return DataLoader(self.mnist_val, batch_size=64, num_workers=8)
 
     def test_dataloader(self) -> Union[DataLoader, List[DataLoader]]:
-        return DataLoader(self.mnist_test, batch_size=64)
+        return DataLoader(self.mnist_test, batch_size=64, num_workers=8)
 
     def predict_dataloader(self) -> Union[DataLoader, List[DataLoader]]:
-        pass
+        return DataLoader(self.mnist_test, batch_size=64, num_workers=8)
